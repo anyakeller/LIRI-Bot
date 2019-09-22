@@ -13,10 +13,10 @@ var spotify = new Spotify(keys.allKeys.spotify);
 // UNCOMMENT WHEN READY TO PUBLISH
 // REMEMBER TO TEST PROCESSS.ARGV[2] FIRST!!!
 // get user input
-// var userCommand = process.argv[2];
+var userCommand = process.argv[2];
 
 // for manual testing
-var userCommand = "concert-this";
+// var userCommand = "concert-this";
 
 // run functions based on input
 switch (userCommand) {
@@ -45,9 +45,9 @@ function concertThis() {
     console.log("concertThis");
     // example api call "https://rest.bandsintown.com/artists/" + artist + "/events?app_id="+bandsintownappid
     //hard codded artist
-    var artist = "imagine dragons";
+    // var artist = "imagine dragons";
     //process argv to uncomment
-    // var artist = process.argv[3];
+    var artist = process.argv.slice(3).join(" ");
 
     //axios call parameter setup
     var bandsInTownAxiosParams = {
@@ -62,16 +62,35 @@ function concertThis() {
     axios(bandsInTownAxiosParams)
         .then(function(response) {
             // handle success
-            console.log(response.data);
+            // console.log(response.data);
+            //if no responce
+            var data = response.data[0];
+
+            if (data) {
+                console.log("Your artist input: ", artist);
+                console.log("Venue Name: ", data.venue.name);
+                console.log(
+                    "Venue location: ",
+                    formatBandsInTownLocation(data.venue)
+                );
+                console.log("Date of Event: ", data.datetime);
+            } else {
+                console.log(
+                    "Your artist input: " + artist + " has no events coming up"
+                );
+            }
         })
         .catch(function(error) {
             // handle error
             console.log(error);
-        })
-        .finally(function() {
-            // always executed
         });
 }
+//helper to format location
+function formatBandsInTownLocation(venueData) {
+    return venueData.city + " " + venueData.region + ", " + venueData.country;
+}
+
+//helper function to format date mm/dd/yy with moment
 
 //spotify this song function
 function spotifyThisSong() {
