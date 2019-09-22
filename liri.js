@@ -73,7 +73,11 @@ function concertThis() {
                     "Venue location: ",
                     formatBandsInTownLocation(data.venue)
                 );
-                console.log("Date of Event: ", data.datetime);
+                console.log(
+                    "Date of Event: ",
+                    moment(data.datetime).format("MM/DD/YYYY")
+                    //data.datetime
+                );
             } else {
                 console.log(
                     "Your artist input: " + artist + " has no events coming up"
