@@ -2,3 +2,8 @@ concert-this cage the elephant
 do-what-it-says
 spotify-this-song swing
 movie-this star trek
+spotify-this-song sultans of swing
+movie-this star trek into darkness
+concert-this cage the elephant
+do-what-it-says
+do-what-it-says

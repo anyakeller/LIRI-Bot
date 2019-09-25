@@ -8,7 +8,7 @@ var fs = require("fs"); //file reader thing
 var keys = require("./keys.js");
 // var omdbapikey = keys.allKeys.omdbapikey;
 var omdbapikey = "trilogy";
-var bandsintownappid = keys.allKeys.bandsintownappid;
+var bandsintownappid = "codingbootcamp";
 //initialize spotify package
 var spotify = new Spotify(keys.allKeys.spotify);
 
