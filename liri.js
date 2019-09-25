@@ -16,7 +16,7 @@ var spotify = new Spotify(keys.allKeys.spotify);
 var userCommand = process.argv[2];
 
 // for manual testing
-// userCommand = "spotify-this-song";
+userCommand = "movie-this";
 
 // run functions based on input
 switch (userCommand) {
@@ -111,6 +111,7 @@ function spotifyThisSong() {
         .then(function(response) {
             var firstResult = response.tracks.items[0];
             // console.log(firstResult);
+            //log into
             console.log("Song Name Found: ", firstResult.name);
             console.log("Artist Name: ", firstResult.artists[0].name);
             console.log("Link to song: ", firstResult.external_urls.spotify);
@@ -123,8 +124,48 @@ function spotifyThisSong() {
 }
 
 //movie this function
+// logs: Title of the movie. * Year the movie came out. * IMDB Rating of the movie. * Rotten Tomatoes Rating of the movie. * Country where the movie was produced. * Language of the movie. * Plot of the movie. * Actors in the movie.
 function movieThis() {
     console.log("movieThis");
+    var movieName = process.argv.slice(3).join(" ");
+    // movieName = "The Godfather"; //Uncomment to hard code movie name
+    //axios call parameter setup
+    var omdbiAxiosParams = {
+        method: "get",
+        url: "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + omdbapikey,
+        responseType: "json"
+    };
+    //axios call
+    axios(omdbiAxiosParams)
+        .then(function(omdbiResult) {
+            // handle success
+            // console.log(response.data);
+            //if no responce
+            var data = omdbiResult.data;
+
+            if (data) {
+                console.log(data);
+                console.log("Movie Found: ", data.Title);
+                console.log("Year: ", data.Year);
+                console.log("IMDB Rating: ", data.Rated);
+                console.log(
+                    data.Ratings[1].Source + ": ",
+                    data.Ratings[1].Value
+                );
+                console.log("Country: ", data.Country);
+                console.log("Language: ", data.Language);
+                console.log("Plot: ", data.Plot);
+                console.log("Actors: ", data.Actors);
+            } else {
+                console.log(
+                    "Your movie input: " + movieName + " was not found"
+                );
+            }
+        })
+        .catch(function(error) {
+            // handle error
+            console.log(error);
+        });
 }
 
 //do-what-it-says function
