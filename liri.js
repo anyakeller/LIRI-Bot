@@ -153,12 +153,7 @@ function movieThis(movieName) {
             omdbapikey,
         responseType: "json"
     };
-    console.log(
-        "http://www.omdbapi.com/?t=" +
-            encodeURI(movieName) +
-            "&apikey=" +
-            omdbapikey
-    );
+
     //axios call
     axios(omdbiAxiosParams)
         .then(function(omdbiResult) {
