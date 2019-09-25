@@ -6,7 +6,8 @@ var axios = require("axios"); //axios
 var fs = require("fs"); //file reader thing
 //import keys
 var keys = require("./keys.js");
-var omdbapikey = keys.allKeys.omdbapikey;
+// var omdbapikey = keys.allKeys.omdbapikey;
+var omdbapikey = "trilogy";
 var bandsintownappid = keys.allKeys.bandsintownappid;
 //initialize spotify package
 var spotify = new Spotify(keys.allKeys.spotify);
@@ -145,9 +146,19 @@ function movieThis(movieName) {
     //axios call parameter setup
     var omdbiAxiosParams = {
         method: "get",
-        url: "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + omdbapikey,
+        url:
+            "http://www.omdbapi.com/?t=" +
+            encodeURI(movieName) +
+            "&apikey=" +
+            omdbapikey,
         responseType: "json"
     };
+    console.log(
+        "http://www.omdbapi.com/?t=" +
+            encodeURI(movieName) +
+            "&apikey=" +
+            omdbapikey
+    );
     //axios call
     axios(omdbiAxiosParams)
         .then(function(omdbiResult) {
@@ -156,8 +167,8 @@ function movieThis(movieName) {
             // console.log(response.data);
             //if no responce
             var data = omdbiResult.data;
-            //if data is returned then log it
-            if (data) {
+            //if title data is returned then log it
+            if (data.Title) {
                 // console.log(data);
                 console.log("Movie Found: ", data.Title);
                 console.log("Year: ", data.Year);
