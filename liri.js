@@ -1,8 +1,9 @@
 // get node packages
 require("dotenv").config();
-var Spotify = require("node-spotify-api");
-var moment = require("moment");
-var axios = require("axios");
+var Spotify = require("node-spotify-api"); //spotify  package
+var moment = require("moment"); //moment package
+var axios = require("axios"); //axios
+var fs = require("fs"); //file reader thing
 //import keys
 var keys = require("./keys.js");
 var omdbapikey = keys.allKeys.omdbapikey;
@@ -16,38 +17,48 @@ var spotify = new Spotify(keys.allKeys.spotify);
 var userCommand = process.argv[2];
 
 // for manual testing
-userCommand = "movie-this";
+// userCommand = "do-what-it-says";
 
-// run functions based on input
-switch (userCommand) {
-    // if concert-this
-    case "concert-this":
-        concertThis();
-        break;
-    // if spotify-this-song
-    case "spotify-this-song":
-        spotifyThisSong();
-        break;
-    //if movie-this
-    case "movie-this":
-        movieThis();
-        break;
+// if the usercommand is dowhatitsays then run that
+if (
     // if do-what-it-says
-    case "do-what-it-says":
-        dowhatItSays();
-        break;
-    default:
-        console.log("Invalid or no command entered!");
+    userCommand === "do-what-it-says"
+) {
+    dowhatItSays();
+} else {
+    //otherwise, pass the command and second argument to be executed
+    var argument = process.argv.slice(3).join(" ");
+    executeInput(userCommand, argument);
+}
+
+//executes direct input argument functions
+function executeInput(userCommand, argument) {
+    // run functions based on input
+    switch (userCommand) {
+        // if concert-this
+        case "concert-this":
+            concertThis(argument);
+            break;
+        // if spotify-this-song
+        case "spotify-this-song":
+            spotifyThisSong(argument);
+            break;
+        //if movie-this
+        case "movie-this":
+            movieThis(argument);
+            break;
+        // otherwise
+        default:
+            console.log("Invalid or no command entered!");
+    }
 }
 
 //concert this function
-function concertThis() {
-    console.log("concertThis");
+function concertThis(artist) {
     // example api call "https://rest.bandsintown.com/artists/" + artist + "/events?app_id="+bandsintownappid
+
     //hard codded artist
     // var artist = "imagine dragons";
-    //process argv to uncomment
-    var artist = process.argv.slice(3).join(" ");
 
     //axios call parameter setup
     var bandsInTownAxiosParams = {
@@ -61,35 +72,39 @@ function concertThis() {
     //axios call
     axios(bandsInTownAxiosParams)
         .then(function(response) {
+            console.log("Running concertThis");
             // handle success
             // console.log(response.data);
-            //if no responce
-            var data = response.data[0];
 
-            if (data) {
-                console.log("Your artist input: ", artist);
-                console.log("Venue Name: ", data.venue.name);
+            var data = response.data[0];
+            //if venue data is returned then log it
+            if (data.venue) {
+                console.log("Your artist input:", artist);
+                console.log("Venue Name:", data.venue.name);
                 console.log(
-                    "Venue location: ",
+                    "Venue location:",
                     formatBandsInTownLocation(data.venue)
                 );
                 console.log(
-                    "Date of Event: ",
+                    "Date of Event:",
                     moment(data.datetime).format("MM/DD/YYYY")
                     //data.datetime
                 );
+                console.log("---------------------");
             } else {
+                //if there is none then oh well
                 console.log(
                     "Your artist input: " + artist + " has no events coming up"
                 );
             }
         })
         .catch(function(error) {
+            //just in case things get... ...messed up
             // handle error
             console.log(error);
         });
 }
-//helper to format location
+//helper function for bands in town to format location input
 function formatBandsInTownLocation(venueData) {
     return venueData.city + " " + venueData.region + ", " + venueData.country;
 }
@@ -98,9 +113,7 @@ function formatBandsInTownLocation(venueData) {
 
 //spotify this song function
 // Returns: Artist(s),The song's name, A preview link of the song from Spotify and The album that the song is from
-function spotifyThisSong() {
-    console.log("spotifyThisSong");
-    var songName = process.argv.slice(3).join(" ");
+function spotifyThisSong(songName) {
     //if song name is not provided
     if (!songName) {
         songName = "Penny Lane";
@@ -109,25 +122,25 @@ function spotifyThisSong() {
     spotify
         .search({ type: "track", query: songName, limit: 1 })
         .then(function(response) {
+            //log the result data
+            console.log("Running spotifyThisSong");
             var firstResult = response.tracks.items[0];
             // console.log(firstResult);
             //log into
-            console.log("Song Name Found: ", firstResult.name);
-            console.log("Artist Name: ", firstResult.artists[0].name);
-            console.log("Link to song: ", firstResult.external_urls.spotify);
-            console.log("Song Album: ", firstResult.album.name);
+            console.log("Song Name Found:", firstResult.name);
+            console.log("Artist Name:", firstResult.artists[0].name);
+            console.log("Link to song:", firstResult.external_urls.spotify);
+            console.log("Song Album:", firstResult.album.name);
+            console.log("---------------------");
         })
         .catch(function(err) {
             console.log(err);
         });
-    console.log("Song Query Name: ", songName);
 }
 
 //movie this function
 // logs: Title of the movie. * Year the movie came out. * IMDB Rating of the movie. * Rotten Tomatoes Rating of the movie. * Country where the movie was produced. * Language of the movie. * Plot of the movie. * Actors in the movie.
-function movieThis() {
-    console.log("movieThis");
-    var movieName = process.argv.slice(3).join(" ");
+function movieThis(movieName) {
     // movieName = "The Godfather"; //Uncomment to hard code movie name
     //axios call parameter setup
     var omdbiAxiosParams = {
@@ -138,13 +151,14 @@ function movieThis() {
     //axios call
     axios(omdbiAxiosParams)
         .then(function(omdbiResult) {
+            console.log("Runnning movieThis");
             // handle success
             // console.log(response.data);
             //if no responce
             var data = omdbiResult.data;
-
+            //if data is returned then log it
             if (data) {
-                console.log(data);
+                // console.log(data);
                 console.log("Movie Found: ", data.Title);
                 console.log("Year: ", data.Year);
                 console.log("IMDB Rating: ", data.Rated);
@@ -156,6 +170,7 @@ function movieThis() {
                 console.log("Language: ", data.Language);
                 console.log("Plot: ", data.Plot);
                 console.log("Actors: ", data.Actors);
+                console.log("---------------------");
             } else {
                 console.log(
                     "Your movie input: " + movieName + " was not found"
@@ -163,6 +178,7 @@ function movieThis() {
             }
         })
         .catch(function(error) {
+            //error poo
             // handle error
             console.log(error);
         });
@@ -171,4 +187,34 @@ function movieThis() {
 //do-what-it-says function
 function dowhatItSays() {
     console.log("dowhatItSays");
+    //read the text file
+    fs.readFile("random.txt", "utf8", function(error, data) {
+        // Error catch
+        if (error) {
+            return console.log(error);
+        }
+        console.log("------------");
+        // Split by line into array
+        var dataLinesArr = data.split("\n");
+        // Split Lines again but run the command each time
+        for (var i = 0; i < dataLinesArr.length; i++) {
+            // split the command from the argument
+            var commandandparameterArr = dataLinesArr[i].split(",");
+            // get rid of extraneous quotes and extra whitespace
+            var theCommand = commandandparameterArr[0]
+                .replace(/['"]+/g, "")
+                .trim();
+            var theargument = commandandparameterArr[1]
+                .replace(/['"]+/g, "")
+                .trim();
+            // console.log(theCommand);
+            // console.log(theargument);
+
+            // just in case someone trys to break it by putting do-what-it-says in the text file...
+            if (theCommand === "do-what-it-says")
+                console.log("Don't you dare try that with me...");
+            //otherwise proceed normally
+            else executeInput(theCommand, theargument);
+        }
+    });
 }
