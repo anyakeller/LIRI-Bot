@@ -39,7 +39,19 @@ This node.js bot takes four commands, three of which require a second argument.
 #### Get data about a movie with the OMDb API
 `$ node liri movie-this [MOVIE NAME]`
 ![example movie-this call](movie-this-example.png)
-#### Run a list of these commands in a .txt file
+#### Run a list of these commands in a random.txt file
+The random.txt is formatted as follows
+``` 
+spotify-this-song,"Shoop"
+concert-this,"Imagine Dragons"
+movie-this,"Casablanca"
+```
+To run:
 `$ node liri do-what-it-says`
 ![example do-what-it-says call](do-what-it-says-example.png)
 
+## Codeflow Organization
+Liri reads the first input and runs the corresponding function with a switch case.  Each command action uses it's own function to run.
+Except for do-what-it-says, the other cases require a second parameter which is read.  
+
+OMDB and Bands in Town ultilize axios to make the API call, while Spotify uses the Spotify node package.
