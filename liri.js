@@ -16,7 +16,7 @@ var spotify = new Spotify(keys.allKeys.spotify);
 var userCommand = process.argv[2];
 
 // for manual testing
-// var userCommand = "concert-this";
+// userCommand = "spotify-this-song";
 
 // run functions based on input
 switch (userCommand) {
@@ -97,8 +97,29 @@ function formatBandsInTownLocation(venueData) {
 //helper function to format date mm/dd/yy with moment
 
 //spotify this song function
+// Returns: Artist(s),The song's name, A preview link of the song from Spotify and The album that the song is from
 function spotifyThisSong() {
     console.log("spotifyThisSong");
+    var songName = process.argv.slice(3).join(" ");
+    //if song name is not provided
+    if (!songName) {
+        songName = "Penny Lane";
+    }
+    // call spotify
+    spotify
+        .search({ type: "track", query: songName, limit: 1 })
+        .then(function(response) {
+            var firstResult = response.tracks.items[0];
+            // console.log(firstResult);
+            console.log("Song Name Found: ", firstResult.name);
+            console.log("Artist Name: ", firstResult.artists[0].name);
+            console.log("Link to song: ", firstResult.external_urls.spotify);
+            console.log("Song Album: ", firstResult.album.name);
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+    console.log("Song Query Name: ", songName);
 }
 
 //movie this function
