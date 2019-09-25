@@ -25,10 +25,12 @@ if (
     // if do-what-it-says
     userCommand === "do-what-it-says"
 ) {
+    logCommands(userCommand);
     dowhatItSays();
 } else {
     //otherwise, pass the command and second argument to be executed
     var argument = process.argv.slice(3).join(" ");
+    logCommands(userCommand + " " + argument);
     executeInput(userCommand, argument);
 }
 
@@ -76,10 +78,10 @@ function concertThis(artist) {
             console.log("Running concertThis");
             // handle success
             // console.log(response.data);
-
             var data = response.data[0];
+
             //if venue data is returned then log it
-            if (data.venue) {
+            if (data !== undefined) {
                 console.log("Your artist input:", artist);
                 console.log("Venue Name:", data.venue.name);
                 console.log(
@@ -221,6 +223,16 @@ function dowhatItSays() {
                 console.log("Don't you dare try that with me...");
             //otherwise proceed normally
             else executeInput(theCommand, theargument);
+        }
+    });
+}
+
+//log to txt file
+function logCommands(commandText) {
+    fs.appendFile("log.txt", commandText + "\n", function(error) {
+        // Error catch
+        if (error) {
+            return console.log(error);
         }
     });
 }
