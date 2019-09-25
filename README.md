@@ -32,10 +32,14 @@ $ npm i moment
 This node.js bot takes four commands, three of which require a second argument.
 #### Get spotify song data from the Spotify api
 `$ node liri spotify-this-song [SONG NAME]`
+![example spotify-this-song call](do-what-it-says-example.png)
 #### Get data about a band or artist concert coming up with the Bands In Town API
-`$ node liri [ARTIST OR BAND]`
+`$ node liri concert-this [ARTIST OR BAND]`
+![example concert-this call](concert-this-example.png)
 #### Get data about a movie with the OMDb API
 `$ node liri movie-this [MOVIE NAME]`
+![example movie-this call](movie-this-example.png)
 #### Run a list of these commands in a .txt file
-`$ node liri do-what-it-says `
+`$ node liri do-what-it-says`
+![example do-what-it-says call](do-what-it-says-example.png)
 
